@@ -1,0 +1,62 @@
+<html>
+<head>
+    <script src="https://unpkg.com/unleash-proxy-client@latest/build/main.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var config = {url: '{{frontend_url}}', clientKey: '{{frontend_token}}', appName: 'featureapp_frontend', refreshInterval: 10};
+        var client = new unleash.UnleashClient(config);
+        client.updateContext({email: '{{email}}'})
+        console.log("{{frontend_url}}" + " " + "{{frontend_token}}");
+        client.on('update', () => {
+            console.log(client.isEnabled('toggle-feature-frontend'));
+        });
+        client.start();
+    </script>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let x = canvas.width / 2;
+        let y = canvas.height / 2;
+        let dx = 2;
+        let dy = -2;
+        const ballRadius = 50;
+
+        // Load the image
+        const ballImage = new Image();
+        ballImage.src = '/static/unleash.png'; // Make sure the image file is in the same directory
+
+        function drawBall() {
+            color = "#0095DD";
+            if(client.isEnabled('toggle-feature-frontend')){
+                ctx.drawImage(ballImage, x - ballRadius, y - ballRadius, ballRadius * 2, ballRadius * 2);
+            } else{
+                ctx.beginPath();
+                ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+                dy = -dy;
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        setInterval(draw, 10);
+    </script>
+</body>
+</html>

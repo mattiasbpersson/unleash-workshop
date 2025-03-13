@@ -1,0 +1,14 @@
+namespace: default
+flags:
+  - key: example
+    name: Example
+    description: An example flag
+    type: BOOLEAN_FLAG_TYPE
+  - key: stefan
+    name: Stefan
+    description: The best flag
+    type: BOOLEAN_FLAG_TYPE
+  - key: mattias
+    name: Mattias
+    description: The best flag
+    type: BOOLEAN_FLAG_TYPE
